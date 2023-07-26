@@ -1,0 +1,13 @@
+In file app.py
+
+    The initial page is loaded. Nothing much will appear until your OPENAI_API_KEY is inputted
+    Then, the function update_chain() is run. The data_source variable holds the string
+    constant DEFAULT_DATA_SOURCE. Then, the function get_chain() is called. Within this function
+    the get_vector_store() function is called with the data_source, options and credentials
+    variables as parameters. Within the get_vector_store() funciton, the get_embeddings
+    function is called with options and credentials vars as parameters. 
+        The default embedding model is openai, but not sure if this costs money? Could
+        maybe change in models.py in class MODELS
+        Anyways...
+    The embedding model is returned from the get_embeddings function. Next, the
+    get_dataset_path() function is called.
