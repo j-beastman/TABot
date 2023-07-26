@@ -6,6 +6,9 @@ import json
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import html
+from joblib import Memory
+
+memory = Memory("cache/", verbose=0)
 
 CS40 = "lck5atzpw5k69m"
 PIAZZA_BASE_LINK = "https://piazza.com/class/"
@@ -39,6 +42,7 @@ def get_length(answer, key):
         return 0
 
 # We only want to get answers that were endorsed by instructors, otherwise our docs will be filled with gahbhage
+@memory.cache  # Cache not tested.
 def get_post_answers(answers) -> str:
     answer_string = ""
     for i, answer in enumerate(answers):
@@ -61,11 +65,13 @@ def get_post_answers(answers) -> str:
             # TODO: Not doing followup questions within followup questions for now...
     return answer_string
 
+@memory.cache  # Cache not tested.
 def get_text(html_text):
     soup = BeautifulSoup(html_text, 'lxml')
     text = soup.get_text()
     return html.unescape(text)
 
+@memory.cache  # Cache not tested.
 def output_to_file(posts):
     for post in tqdm(posts):
         instructor, student = False, False
