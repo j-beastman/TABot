@@ -42,7 +42,7 @@ def get_length(answer, key):
         return 0
 
 # We only want to get answers that were endorsed by instructors, otherwise our docs will be filled with gahbhage
-@memory.cache  # Cache not tested.
+# @memory.cache  # Cache not tested.
 def get_post_answers(answers) -> str:
     answer_string = ""
     for i, answer in enumerate(answers):
@@ -65,13 +65,13 @@ def get_post_answers(answers) -> str:
             # TODO: Not doing followup questions within followup questions for now...
     return answer_string
 
-@memory.cache  # Cache not tested.
+# @memory.cache  # Cache not tested.
 def get_text(html_text):
     soup = BeautifulSoup(html_text, 'lxml')
     text = soup.get_text()
     return html.unescape(text)
 
-@memory.cache  # Cache not tested.
+# @memory.cache  # Cache not tested.
 def output_to_file(posts):
     for post in tqdm(posts):
         instructor, student = False, False
@@ -134,7 +134,7 @@ cs40 = p.network(CS40)
 # post = []
 # post.append(cs40.get_post(522))
 
-posts = cs40.iter_all_posts()
+posts = cs40.iter_all_posts(sleep=0.5)
 # print(json.dumps(cs40.get_post(620), indent=4))
 output_to_file(posts)
 
