@@ -72,26 +72,10 @@ def get_post_answers(answers) -> str:
             get_length(answer, "tag_endorse") != 0
             or get_length(answer, "tag_good") != 0
         ):
-            answer_content = get_history_content(answer, "subject")
-            if answer_content == "":
-                # this has html in it
-                answer_string += (
-                    f"Answer #{i}: \n {get_history_content(answer, 'content')} \n"
-                )
-            else:
-                # this has html in it
-                answer_string += f"Answer #{i}: \n {answer_content} \n"
-            # checking in subject and content now
-            if answer_content == "":
-                answer_content = get_text(get_content(answer, "subject"))
-                if answer_content == "":
-                    # this has html in it
-                    answer_string += (
-                        f"Answer #{i}: \n {get_content(answer, 'content')} \n"
-                    )
-                else:
-                    # this has html in it
-                    answer_string += f"Answer #{i}: \n {answer_content} \n"
+            answer_content = get_answer_contents(answer, "subject")
+            answer_string += (
+                f"Answer #{i}: \n {answer_content} \n"
+            )
             # TODO: Not doing followup questions within followup questions for
             # now...
     return answer_string
@@ -167,7 +151,7 @@ cs40 = p.network(CS40)
 # post = []
 # post.append(cs40.get_post(522))
 
-posts = cs40.iter_all_posts(sleep=1)
+posts = cs40.iter_all_posts(limit=10, sleep=1)
 # print(json.dumps(cs40.get_post(620), indent=4))
 output_to_file(posts)
 

@@ -1965,6 +1965,21 @@ docs = ["sphinx", "sphinx-argparse"]
 image = ["Pillow"]
 
 [[package]]
+name = "piazza-api"
+version = "0.12.0"
+description = "Unofficial Client for Piazza's Internal API"
+optional = false
+python-versions = "*"
+files = [
+    {file = "piazza-api-0.12.0.tar.gz", hash = "sha256:6f6596d81998f90b662edb3fdbaa7f697a8b59d4dbd5749e7005fc6ce684dcf5"},
+    {file = "piazza_api-0.12.0-py3-none-any.whl", hash = "sha256:1ce79114ba72faf5680d3b07f8d38fa0cf006bbc2e239d0676bd2b125eb6ef34"},
+]
+
+[package.dependencies]
+requests = "*"
+six = "*"
+
+[[package]]
 name = "pillow"
 version = "9.5.0"
 description = "Python Imaging Library (Fork)"
@@ -3939,4 +3954,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0627b290abff074a75e0b620538a065cf6807a679b8e2ef2606238dc80020494"
+content-hash = "5275fd23b64b451f6b9ae5c8c8ce573f5b8b611fcdd59c6affd96f49823a1b53"
