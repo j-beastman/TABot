@@ -9,7 +9,7 @@ def get_chain(
     data_source: str, options: dict, credentials: dict
 ) -> ConversationalRetrievalChain:
     # create the langchain that will be called to generate responses
-    vector_store = get_vector_store(data_source, options, credentials)
+    vector_store = get_vector_store(data_source, credentials)
     retriever = vector_store.as_retriever()
     # Search params "fetch_k" and "k" define how many documents are pulled from the hub
     # and selected after the document matching to build the context

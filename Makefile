@@ -1,25 +1,19 @@
-# .PHONY: all clean datarobot_models
-
 # all: install lint data/combined_data.csv
+FORMAT_DIRS := ./datachad ./piazza-api ./deeplake
 
 install:
 	poetry install
 
-# test:
-# 	poetry run pytest
-
 format:
-	poetry run autopep8 --in-place --aggressive --aggressive --recursive streamlit
-	poetry run isort --profile black streamlit
-	poetry run black streamlit
+	poetry run autopep8 --in-place --aggressive --recursive $(FORMAT_DIRS)
+	poetry run isort --profile black $(FORMAT_DIRS)
+	poetry run black $(FORMAT_DIRS)
 	make lint
-
+# Lint target
 lint:
-	poetry run isort --check --profile black streamlit
-	poetry run black --check streamlit
-	poetry run flake8 streamlit
-	#poetry run pycodestyle
-	#poetry run pylint streamlit
+	poetry run isort --check --profile black $(FORMAT_DIRS)
+	poetry run black --check $(FORMAT_DIRS)
+	poetry run flake8 $(FORMAT_DIRS)
 
 # clean:
 # 	@$(RM) -rf data/*

@@ -1,18 +1,16 @@
 from dataclasses import dataclass
 from typing import Any, List
 
-import streamlit as st
 import tiktoken
 from langchain.base_language import BaseLanguageModel
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.embeddings.openai import Embeddings, OpenAIEmbeddings
+from langchain.embeddings.openai import Embeddings
 from langchain.llms import GPT4All
 from transformers import AutoTokenizer
 
 from datachad.constants import GPT4ALL_BINARY, MODEL_PATH
-from datachad.logging import logger
 
 
 class Enum:
@@ -81,38 +79,13 @@ def get_model(options: dict, credentials: dict) -> BaseLanguageModel:
                 verbose=True,
                 callbacks=[StreamingStdOutCallbackHandler()],
             )
-        # Added models need to be cased here
-        case _default:
-            msg = f"Model {options['model'].name} not supported!"
-            logger.error(msg)
-            st.error(msg)
-            exit
     return model
 
 
-def get_embeddings(options: dict, credentials: dict) -> Embeddings:
+def get_embeddings() -> Embeddings:
     return HuggingFaceEmbeddings(
-                model_name=EMBEDDINGS.HUGGINGFACE, cache_folder=str(MODEL_PATH)
-            )
-    #Need to deal with this other shit later
-    match options["model"].embedding:
-        case EMBEDDINGS.OPENAI:
-            embeddings = OpenAIEmbeddings(
-                model=EMBEDDINGS.OPENAI,
-                disallowed_special=(),
-                openai_api_key=credentials["openai_api_key"],
-            )
-        case EMBEDDINGS.HUGGINGFACE:
-            embeddings = HuggingFaceEmbeddings(
-                model_name=EMBEDDINGS.HUGGINGFACE, cache_folder=str(MODEL_PATH)
-            )
-        # Added embeddings need to be cased here
-        case _default:
-            msg = f"Embeddings {options['model'].embedding} not supported!"
-            logger.error(msg)
-            st.error(msg)
-            exit
-    return embeddings
+        model_name=EMBEDDINGS.HUGGINGFACE, cache_folder=str(MODEL_PATH)
+    )
 
 
 def get_tokenizer(options: dict) -> Embeddings:
@@ -121,10 +94,4 @@ def get_tokenizer(options: dict) -> Embeddings:
             tokenizer = tiktoken.encoding_for_model(EMBEDDINGS.OPENAI)
         case EMBEDDINGS.HUGGINGFACE:
             tokenizer = AutoTokenizer.from_pretrained(EMBEDDINGS.HUGGINGFACE)
-        # Added tokenizers need to be cased here
-        case _default:
-            msg = f"Tokenizer {options['model'].embedding} not supported!"
-            logger.error(msg)
-            st.error(msg)
-            exit
     return tokenizer

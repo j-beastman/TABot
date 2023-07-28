@@ -1,26 +1,22 @@
 import os
 
-import deeplake
 import openai
 import streamlit as st
 from dotenv import load_dotenv
 from langchain.callbacks import OpenAICallbackHandler, get_openai_callback
 
+import deeplake
 from datachad.chain import get_chain
 from datachad.constants import (
-    ACTIVELOOP_HELP,
     AUTHENTICATION_HELP,
     CHUNK_OVERLAP,
     CHUNK_SIZE,
     DEFAULT_DATA_SOURCE,
     DISTANCE_METRIC,
     ENABLE_ADVANCED_OPTIONS,
-    ENABLE_LOCAL_MODE,
     FETCH_K,
-    LOCAL_MODE_DISABLED_HELP,
     MAX_TOKENS,
     MAXIMAL_MARGINAL_RELEVANCE,
-    MODE_HELP,
     MODEL_N_CTX,
     OPENAI_HELP,
     PAGE_ICON,
@@ -28,7 +24,7 @@ from datachad.constants import (
     TEMPERATURE,
     K,
 )
-from datachad.io import delete_files, save_files
+from datachad.io import delete_files
 from datachad.logging import logger
 from datachad.models import MODELS, MODES
 
@@ -48,7 +44,7 @@ def initialize_session_state():
         "openai_api_key": None,
         "activeloop_token": None,
         "activeloop_org_name": None,
-        "uploaded_files": None, # None needed
+        "uploaded_files": None,  # None needed
         "info_container": None,
         "data_source": DEFAULT_DATA_SOURCE,
         "mode": MODES.OPENAI,
@@ -208,23 +204,20 @@ def authentication_and_options_side_bar():
             advanced_options_form()
 
 
-def authenticate(
-    openai_api_key: str
-) -> None:
+def authenticate(openai_api_key: str) -> None:
     # Validate all credentials are set and correct
-    # Check for env variables to enable local dev and deployments with shared credentials
+    # Check for env variables to enable local dev and deployments with shared
+    # credentials
     openai_api_key = (
         openai_api_key
         or os.environ.get("OPENAI_API_KEY")
         or st.secrets.get("OPENAI_API_KEY")
     )
-    activeloop_token = (
-        os.environ.get("ACTIVELOOP_TOKEN")
-        or st.secrets.get("ACTIVELOOP_TOKEN")
+    activeloop_token = os.environ.get("ACTIVELOOP_TOKEN") or st.secrets.get(
+        "ACTIVELOOP_TOKEN"
     )
-    activeloop_org_name = (
-        os.environ.get("ACTIVELOOP_ORG_NAME")
-        or st.secrets.get("ACTIVELOOP_ORG_NAME")
+    activeloop_org_name = os.environ.get("ACTIVELOOP_ORG_NAME") or st.secrets.get(
+        "ACTIVELOOP_ORG_NAME"
     )
     if not (openai_api_key and activeloop_token and activeloop_org_name):
         st.session_state["auth_ok"] = False
@@ -236,7 +229,8 @@ def authenticate(
             openai.api_key = openai_api_key
             openai.Model.list()
             deeplake.exists(
-                f"hub://{activeloop_org_name}/DataChad-Authentication-Check", # This is crazy
+                # This is crazy
+                f"hub://{activeloop_org_name}/DataChad-Authentication-Check",
                 token=activeloop_token,
             )
     except Exception as e:
@@ -258,12 +252,7 @@ def update_chain() -> None:
     try:
         with st.session_state["info_container"], st.spinner("Building Chain..."):
             data_source = st.session_state["data_source"]
-            # if st.session_state["uploaded_files"] == st.session_state["data_source"]:
-            #     # Save files uploaded by streamlit to disk and set their path as data source.
-            #     # We need to repeat this at every chain update as long as data source is the uploaded file
-            #     # as we need to delete the files after each chain build to make sure to not pollute the app
-            #     # and to ensure data privacy by not storing user data
-            #     data_source = save_files(st.session_state["uploaded_files"])
+
             st.session_state["chain"] = get_chain(
                 data_source=data_source,
                 options={
@@ -291,11 +280,13 @@ def update_chain() -> None:
                 # remove uploaded files from disk
                 delete_files(st.session_state["uploaded_files"])
             st.session_state["chat_history"] = []
-            msg = f"Data source **{st.session_state['data_source']}** is ready to go with model **{st.session_state['model']}**!"
+            msg = f"""Data source **{st.session_state['data_source']}**
+                    is ready to go with model **{st.session_state['model']}**!"""
             logger.info(msg)
             st.session_state["info_container"].info(msg, icon=PAGE_ICON)
     except Exception as e:
-        msg = f"Failed to build chain for data source **{st.session_state['data_source']}** with model **{st.session_state['model']}**: {e}"
+        msg = f"""Failed to build chain for data source **{st.session_state['data_source']}**
+                with model **{st.session_state['model']}**: {e}"""
         logger.error(msg)
         st.session_state["info_container"].error(msg, icon=PAGE_ICON)
 

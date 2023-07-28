@@ -58,7 +58,7 @@ class AutoGitLoader:
             shutil.rmtree(repo_path)
         try:
             return docs
-        except:
+        except BaseException:
             raise RuntimeError("Make sure to use HTTPS GitHub repo links")
 
 

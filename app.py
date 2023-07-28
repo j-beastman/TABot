@@ -1,12 +1,11 @@
 import streamlit as st
 from streamlit_chat import message
 
-from datachad.constants import APP_NAME, PAGE_ICON, UPLOAD_HELP, USAGE_HELP
+from datachad.constants import APP_NAME, PAGE_ICON, USAGE_HELP
 from datachad.helper import (
     authentication_and_options_side_bar,
     generate_response,
     initialize_session_state,
-    logger,
     update_chain,
 )
 
@@ -19,17 +18,14 @@ st.set_page_config(
     page_title=APP_NAME, page_icon=PAGE_ICON, initial_sidebar_state="expanded"
 )
 st.markdown(
-    f"<h1 style='text-align: center;'>{APP_NAME} {PAGE_ICON} </h1>",
+    # I don't know html so if we could make this prettier
+    f"""<h1 style='text-align: center;'>{APP_NAME} {PAGE_ICON} </h1>
+    <h2 style='text-align: center;'> Skip the queue! </h2>""",
     unsafe_allow_html=True,
 )
 
-# Define all containers upfront to ensure app UI consistency
-# container to upload files
-upload_container = st.container() ## <-- Will remove
-# container to enter any datasource string
-datasource_container = st.container()
 # container to display infos stored to session state
-# as it needs to be accessed from submodules
+# as it needs to be accessed from submodules <-- not sure what this does?
 st.session_state["info_container"] = st.container()
 # container for chat history
 response_container = st.container()
@@ -39,33 +35,10 @@ text_container = st.container()
 # sidebar widget with authentication and options
 authentication_and_options_side_bar()
 
-# file upload and data source input widgets
-uploaded_files = upload_container.file_uploader(
-    "Upload Files", accept_multiple_files=True, help=UPLOAD_HELP
-)
-data_source = datasource_container.text_input(
-    "Enter any data source",
-    placeholder="Any path or url pointing to a file or directory of files",
-)
-
 # we initialize chain after authentication is OK
 # and upload and data source widgets are in place
 if st.session_state["chain"] is None:
     update_chain()
-
-# generate new chain for new data source / uploaded file
-# make sure to do this only once per input / on change
-if data_source and data_source != st.session_state["data_source"]:
-    logger.info(f"Data source provided: '{data_source}'")
-    st.session_state["data_source"] = data_source
-    update_chain()
-
-if uploaded_files and uploaded_files != st.session_state["uploaded_files"]:
-    logger.info(f"Uploaded files: '{uploaded_files}'")
-    st.session_state["uploaded_files"] = uploaded_files
-    st.session_state["data_source"] = uploaded_files
-    update_chain()
-
 
 # As streamlit reruns the whole script on each change
 # it is necessary to repopulate the chat containers
