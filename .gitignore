@@ -6,8 +6,8 @@ __pycache__
 .DS_Store
 testing.ipynb
 
-.streamlit/
 models/
 data/
 cache/
 poetry.lock
+secrets.toml

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from datachad.constants import APP_NAME
+from .constants import APP_NAME
 
 logger = logging.getLogger(APP_NAME)
 

@@ -1,8 +1,8 @@
 import streamlit as st
-from streamlit_chat import message
+# from streamlit_chat import message
 
-from datachad.constants import APP_NAME, PAGE_ICON, USAGE_HELP
-from datachad.helper import (
+from helpers.constants import APP_NAME, PAGE_ICON, USAGE_HELP
+from helpers.helper import (
     authentication_and_options_side_bar,
     generate_response,
     initialize_session_state,
@@ -61,11 +61,11 @@ if submit_button and user_input:
     st.session_state["past"].append(user_input)
     st.session_state["generated"].append(output)
 
-if st.session_state["generated"]:
-    with response_container:
-        for i in range(len(st.session_state["generated"])):
-            message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
-            message(st.session_state["generated"][i], key=str(i))
+# if st.session_state["generated"]:
+#     with response_container:
+#         for i in range(len(st.session_state["generated"])):
+#             message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
+#             message(st.session_state["generated"][i], key=str(i))
 
 
 # Usage sidebar with total used tokens and costs

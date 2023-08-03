@@ -10,7 +10,7 @@ from langchain.embeddings.openai import Embeddings
 from langchain.llms import GPT4All
 from transformers import AutoTokenizer
 
-from datachad.constants import GPT4ALL_BINARY, MODEL_PATH
+from .constants import GPT4ALL_BINARY, MODEL_PATH
 
 
 class Enum:

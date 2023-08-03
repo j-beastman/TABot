@@ -5,8 +5,8 @@ import shutil
 from pathlib import Path
 from typing import List, Tuple
 
-from datachad.constants import DATA_PATH
-from datachad.logging import logger
+from .constants import DATA_PATH
+# from logging import logger
 
 
 def clean_string_for_storing(string: str) -> str:
@@ -51,7 +51,7 @@ def save_file(file: io.BytesIO, path: Path):
     file = open(file_path, "wb")
     file.write(file_bytes)
     file.close()
-    logger.info(f"Saved: {file_path}")
+    # logger.info(f"Saved: {file_path}")
 
 
 def save_files(files: List[io.BytesIO]) -> str:
@@ -73,4 +73,4 @@ def delete_files(files: List[io.BytesIO]) -> None:
         os.remove(data_source)
     else:
         return
-    logger.info(f"Removed: {data_source}")
+    # logger.info(f"Removed: {data_source}")

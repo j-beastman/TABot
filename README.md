@@ -1,4 +1,4 @@
-# DataChad 🤖
+# TABot 🤖
 
 This is an app that let's you ask questions about any data source by leveraging [embeddings](https://platform.openai.com/docs/guides/embeddings), [vector databases](https://www.activeloop.ai/), [large language models](https://platform.openai.com/docs/models/gpt-3-5) and last but not least [langchains](https://github.com/hwchase17/langchain)
 
@@ -23,9 +23,6 @@ This is an app that let's you ask questions about any data source by leveraging 
 - Your data won't load? Feel free to open an Issue or PR and contribute!
 - Yes, Chad in `DataChad` refers to the well-known [meme](https://www.google.com/search?q=chad+meme)
 
-## How does it look like?
-
-<img src="./datachad.png" width="100%"/>
 
 ## TODO LIST
 If you like to contribute, feel free to grab any task
@@ -36,3 +33,8 @@ If you like to contribute, feel free to grab any task
 - [x] Decouple datachad modules from streamlit
 - [ ] Support streaming responses
 - [ ] Add Image caption and Audio transcription support
+
+## To Run Locally or to develop:
+1. Run `poetry install`
+    - Optional (recommended) add the python interpreter as its location'll be displayed as the first line
+        after poetry install

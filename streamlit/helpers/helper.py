@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from langchain.callbacks import OpenAICallbackHandler, get_openai_callback
 
 import deeplake
-from datachad.chain import get_chain
-from datachad.constants import (
+from .chain import get_chain
+from .constants import (
     AUTHENTICATION_HELP,
     CHUNK_OVERLAP,
     CHUNK_SIZE,
@@ -24,9 +24,9 @@ from datachad.constants import (
     TEMPERATURE,
     K,
 )
-from datachad.io import delete_files
-from datachad.logging import logger
-from datachad.models import MODELS, MODES
+from .io import delete_files
+# from logging import logger
+from .models import MODELS, MODES
 
 # loads environment variables
 load_dotenv()
@@ -75,21 +75,9 @@ def authentication_form() -> None:
             help=OPENAI_HELP,
             placeholder="This field is mandatory",
         )
-        # activeloop_token = st.text_input(
-        #     "ActiveLoop Token",
-        #     type="password",
-        #     help=ACTIVELOOP_HELP,
-        #     placeholder="Optional, using ours if empty",
-        # )
-        # activeloop_org_name = st.text_input(
-        #     "ActiveLoop Organisation Name",
-        #     type="password",
-        #     help=ACTIVELOOP_HELP,
-        #     placeholder="Optional, using ours if empty",
-        # )
+        
         submitted = st.form_submit_button("Submit")
         if submitted:
-            # authenticate(openai_api_key, activeloop_token, activeloop_org_name)
             authenticate(openai_api_key)
 
 
@@ -234,7 +222,7 @@ def authenticate(openai_api_key: str) -> None:
                 token=activeloop_token,
             )
     except Exception as e:
-        logger.error(f"Authentication failed with {e}")
+        # logger.error(f"Authentication failed with {e}")
         st.session_state["auth_ok"] = False
         st.error("Authentication failed", icon=PAGE_ICON)
         return
@@ -243,7 +231,7 @@ def authenticate(openai_api_key: str) -> None:
     st.session_state["openai_api_key"] = openai_api_key
     st.session_state["activeloop_token"] = activeloop_token
     st.session_state["activeloop_org_name"] = activeloop_org_name
-    logger.info("Authentification successful!")
+    # logger.info("Authentification successful!")
 
 
 def update_chain() -> None:
@@ -282,18 +270,18 @@ def update_chain() -> None:
             st.session_state["chat_history"] = []
             msg = f"""Data source **{st.session_state['data_source']}**
                     is ready to go with model **{st.session_state['model']}**!"""
-            logger.info(msg)
+            # logger.info(msg)
             st.session_state["info_container"].info(msg, icon=PAGE_ICON)
     except Exception as e:
         msg = f"""Failed to build chain for data source **{st.session_state['data_source']}**
                 with model **{st.session_state['model']}**: {e}"""
-        logger.error(msg)
+        # logger.error(msg)
         st.session_state["info_container"].error(msg, icon=PAGE_ICON)
 
 
 def update_usage(cb: OpenAICallbackHandler) -> None:
     # Accumulate API call usage via callbacks
-    logger.info(f"Usage: {cb}")
+    # logger.info(f"Usage: {cb}")
     callback_properties = [
         "total_tokens",
         "prompt_tokens",
@@ -313,6 +301,6 @@ def generate_response(prompt: str) -> str:
             {"question": prompt, "chat_history": st.session_state["chat_history"]}
         )
         update_usage(cb)
-    logger.info(f"Response: '{response}'")
+    # logger.info(f"Response: '{response}'")
     st.session_state["chat_history"].append((prompt, response["answer"]))
     return response["answer"]

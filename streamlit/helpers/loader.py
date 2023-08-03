@@ -26,9 +26,9 @@ from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from tqdm import tqdm
 
-from datachad.constants import DATA_PATH, PROJECT_URL
-from datachad.logging import logger
-from datachad.models import get_tokenizer
+from .constants import DATA_PATH, PROJECT_URL
+from .logging import logger
+from .models import get_tokenizer
 
 
 class AutoGitLoader:
@@ -135,7 +135,7 @@ def load_data_source(data_source: str) -> List[Document]:
         return docs
     except Exception as e:
         error_msg = f"Failed to load your data source '{data_source}'. Consider contributing: {PROJECT_URL}"
-        logger.error(error_msg)
+        # logger.error(error_msg)
         e.args += (error_msg,)
         raise e
 
@@ -154,5 +154,5 @@ def split_docs(docs: List[Document], options: dict) -> List[Document]:
     )
 
     splitted_docs = text_splitter.split_documents(docs)
-    logger.info(f"Loaded: {len(splitted_docs)} document chucks")
+    # logger.info(f"Loaded: {len(splitted_docs)} document chucks")
     return splitted_docs

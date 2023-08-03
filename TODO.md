@@ -44,3 +44,4 @@
     when error pops up, we stop and wait then continue?
 20. Implement boosted retrieval/ping LLM again with boosted retreival if response is bad.
 21. is .env.template a necessary file?
+22. Logger is cool I should understand it, but it's too much rn

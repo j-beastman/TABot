@@ -1,13 +1,14 @@
 from langchain.chains import ConversationalRetrievalChain
 
-from datachad.database import get_vector_store
-from datachad.logging import logger
-from datachad.models import get_model
+from .database import get_vector_store
+# from logging import logger
+from .models import get_model
 
 
 def get_chain(
     data_source: str, options: dict, credentials: dict
 ) -> ConversationalRetrievalChain:
+    print("Calling get_chain")
     # create the langchain that will be called to generate responses
     vector_store = get_vector_store(data_source, credentials)
     retriever = vector_store.as_retriever()
@@ -31,5 +32,5 @@ def get_chain(
         # to prevent running into the models context window limit of 4096
         max_tokens_limit=options["max_tokens"],
     )
-    logger.info(f"Chain for data source {data_source} and settings {options} build!")
+    # logger.info(f"Chain for data source {data_source} and settings {options} build!")
     return chain
