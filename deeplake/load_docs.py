@@ -7,15 +7,16 @@ from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddi
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import DeepLake
 
+
 CLASS = "cs40"
 VECTOR_STORE_PATH = f"hub://69-69/{CLASS}"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 SOURCE_DOCUMENTS_DIR = f"data/{CLASS}/Piazza_docs"
 SOURCE_DOCUMENTS_FILTER = "**/*.txt"
-ACTIVELOOP_TOKEN = st.secrets["ACTIVELOOP_TOKEN"]
+ACTIVELOOP_TOKEN = "eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5MDkxMjA3OCwiZXhwIjoxNjkyMzgwODE5fQ.eyJpZCI6ImpiZWFzdG1hbiJ9.mIWf1mIDXVtkW-kQ0evKnBbje-mR72-ZcLppYOrfvA3ihg-AjbCFzNvhS3n4vTCN5adYS5KQCBpYs-ZomXdjFA"
 
 
-def combine_piazza_docs(directory, filter, split=False):
+def load_docs(directory, filter, split=False):
     loader = DirectoryLoader(f"./{directory}", glob=filter)
     # TODO: I don't think that there is a need to split the Piazza documents
     #   because they're all split up already!
@@ -35,7 +36,7 @@ def combine_piazza_docs(directory, filter, split=False):
     return data
 
 
-chunked_text = combine_piazza_docs(SOURCE_DOCUMENTS_DIR, SOURCE_DOCUMENTS_FILTER)
+chunked_text = load_docs(SOURCE_DOCUMENTS_DIR, SOURCE_DOCUMENTS_FILTER)
 
 # Will download the model the first time it runs (slowly)
 embedding_function = SentenceTransformerEmbeddings(

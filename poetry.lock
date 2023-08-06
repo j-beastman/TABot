@@ -1199,6 +1199,8 @@ files = [
     {file = "lxml-4.9.3-cp27-cp27m-macosx_11_0_x86_64.whl", hash = "sha256:b0a545b46b526d418eb91754565ba5b63b1c0b12f9bd2f808c852d9b4b2f9b5c"},
     {file = "lxml-4.9.3-cp27-cp27m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:075b731ddd9e7f68ad24c635374211376aa05a281673ede86cbe1d1b3455279d"},
     {file = "lxml-4.9.3-cp27-cp27m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:1e224d5755dba2f4a9498e150c43792392ac9b5380aa1b845f98a1618c94eeef"},
+    {file = "lxml-4.9.3-cp27-cp27m-win32.whl", hash = "sha256:2c74524e179f2ad6d2a4f7caf70e2d96639c0954c943ad601a9e146c76408ed7"},
+    {file = "lxml-4.9.3-cp27-cp27m-win_amd64.whl", hash = "sha256:4f1026bc732b6a7f96369f7bfe1a4f2290fb34dce00d8644bc3036fb351a4ca1"},
     {file = "lxml-4.9.3-cp27-cp27mu-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:c0781a98ff5e6586926293e59480b64ddd46282953203c76ae15dbbbf302e8bb"},
     {file = "lxml-4.9.3-cp27-cp27mu-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:cef2502e7e8a96fe5ad686d60b49e1ab03e438bd9123987994528febd569868e"},
     {file = "lxml-4.9.3-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:b86164d2cff4d3aaa1f04a14685cbc072efd0b4f99ca5708b2ad1b9b5988a991"},
@@ -1966,13 +1968,13 @@ image = ["Pillow"]
 
 [[package]]
 name = "piazza-api"
-version = "0.12.0"
+version = "0.13.0"
 description = "Unofficial Client for Piazza's Internal API"
 optional = false
 python-versions = "*"
 files = [
-    {file = "piazza-api-0.12.0.tar.gz", hash = "sha256:6f6596d81998f90b662edb3fdbaa7f697a8b59d4dbd5749e7005fc6ce684dcf5"},
-    {file = "piazza_api-0.12.0-py3-none-any.whl", hash = "sha256:1ce79114ba72faf5680d3b07f8d38fa0cf006bbc2e239d0676bd2b125eb6ef34"},
+    {file = "piazza-api-0.13.0.tar.gz", hash = "sha256:52892c34b1a037f6b3c68db8b6aff29d547e6932cd51034196f8addf5cf6e38c"},
+    {file = "piazza_api-0.13.0-py3-none-any.whl", hash = "sha256:816ce384b3bb095ae757d15cb94b9059ceada031133b654768c4b2271fb2fb23"},
 ]
 
 [package.dependencies]
@@ -3954,4 +3956,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5275fd23b64b451f6b9ae5c8c8ce573f5b8b611fcdd59c6affd96f49823a1b53"
+content-hash = "5134b0a5da72f4b0f909a374899539935a999a23c4826452a8812ff1092e7d77"

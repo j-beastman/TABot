@@ -23,8 +23,8 @@ run_site:
 
 
 get_piazza_data:
-	poetry run python piazza_data.py
+	poetry run python deeplake/load_piazza.py
 
 
 load_docs:
-	poetry run python load_docs.py
+	poetry run python deeplake/load_docs.py

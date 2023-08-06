@@ -23,6 +23,7 @@ from .constants import (
     PROJECT_URL,
     TEMPERATURE,
     K,
+    CHAT_HISTORY,
 )
 from .io import delete_files
 # from logging import logger
@@ -37,7 +38,7 @@ def initialize_session_state():
     SESSION_DEFAULTS = {
         "past": [],
         "usage": {},
-        "chat_history": [],
+        "chat_history": CHAT_HISTORY,
         "generated": [],
         "auth_ok": False,
         "chain": None,
@@ -63,6 +64,7 @@ def initialize_session_state():
     for k, v in SESSION_DEFAULTS.items():
         if k not in st.session_state:
             st.session_state[k] = v
+    print(st.session_state["chat_history"])
 
 
 def authentication_form() -> None:
@@ -303,4 +305,40 @@ def generate_response(prompt: str) -> str:
         update_usage(cb)
     # logger.info(f"Response: '{response}'")
     st.session_state["chat_history"].append((prompt, response["answer"]))
+    print(response["answer"])
     return response["answer"]
+
+# Basically it's saying look at these posts
+def retrieve_links(prompt, db, max_links=None): # <-- retrieving links is going to be a struggle
+    dr_docs_dir = "data/vectordb_training/datarobot_docs/en/"
+    dr_security_dir = "data/vectordb_training/datarobot_docs/"
+    rfp_docs_dir = "data/vectordb_training/reprocessed_data/"
+    docs = db.similarity_search_with_score(prompt)
+    # Find the threshold where it makes sense to give links back?
+    if max_links is not None:
+        if len(docs) > max_links:
+            docs = docs[:max_links]
+    links = []
+    for doc in docs:
+        link = doc[0].metadata["source"]
+        print(link)
+        if link.startswith(dr_docs_dir):
+            link = link[len(dr_docs_dir) :]
+            link = "https://docs.datarobot.com/en/docs/" + link
+            link = link[:-2] + "html"  # Remove "md", add html
+        elif link.startswith(dr_security_dir):
+            link = "https://www.datarobot.com/trustcenter/"
+        elif link.startswith(rfp_docs_dir):
+            try:
+                file = open(link, "r")
+                file_contents = file.read()
+                link = re.search(r"https://\S+", file_contents)
+                file.close()
+                link = link.group()
+            except AttributeError:
+                link = None
+            except FileNotFoundError:
+                link = None
+        links.append(link)
+    return ", ".join(list(set([i for i in links if i is not None])))
+

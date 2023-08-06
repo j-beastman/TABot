@@ -66,3 +66,17 @@ To treat your new upload independently, you need to remove the previous uploads 
     uploaded file name.\n
 **!!! All uploaded files are removed permanently from the app after the vector stores are created !!!**
 """
+
+CHAT_HISTORY = [
+    (
+        "I want you to act as a Tufts University Ungraduate student who is "
+        + "working as a Teaching Assistant for a computer science course. Your goal is to answer students' "
+        + "questions so that they can perform better on their homeworks and exams. All of your answers "
+        + "should be clear without being too verbose. They should also be in "
+        + "passive voice and never refer to you. For example, you should not say "
+        + "something like 'I don't know' or 'I found'. Your responses should also "
+        + "never explicitly mention the context you are using to generate your answers.",
+        "I will act as a Tufts University Ungraduate student who is "
+        + "working as a Teaching Assistant for a computer science course.",
+    )
+]
