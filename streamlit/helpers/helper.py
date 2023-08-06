@@ -172,17 +172,6 @@ def update_model_on_mode_change():
 def authentication_and_options_side_bar():
     # Sidebar with Authentication and Advanced Options
     with st.sidebar:
-        # mode = st.selectbox(
-        #     "Mode",
-        #     MODES.all(),
-        #     key="mode",
-        #     help=MODE_HELP,
-        #     on_change=update_model_on_mode_change,
-        # )
-        # if mode == MODES.LOCAL and not ENABLE_LOCAL_MODE:
-        #     st.error(LOCAL_MODE_DISABLED_HELP, icon=PAGE_ICON)
-        #     st.stop()
-        # if mode != MODES.LOCAL:
         authentication_form()
 
         st.info(f"Learn how it works [here]({PROJECT_URL})")
@@ -307,6 +296,23 @@ def generate_response(prompt: str) -> str:
     st.session_state["chat_history"].append((prompt, response["answer"]))
     print(response["answer"])
     return response["answer"]
+
+# TODO: Calculate costs; create this function
+#   using the templates in the constants module.
+#   Not as easy as it looks because we have the whole conversation to take into
+#   account sometimes. This could be a good template to do for the first question
+#   in a conversation.
+def generate_boosted_response(prompt:str) -> str:
+    with st.spinner("Generating response"), get_openai_callback() as cb:
+        response = st.session_state["chain"](
+            {"question": prompt, "chat_history": st.session_state["chat_history"]}
+        )
+        update_usage(cb)
+    # logger.info(f"Response: '{response}'")
+    st.session_state["chat_history"].append((prompt, response["answer"]))
+    print(response["answer"])
+    return response["answer"]
+
 
 # Basically it's saying look at these posts
 def retrieve_links(prompt, db, max_links=None): # <-- retrieving links is going to be a struggle

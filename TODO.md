@@ -45,4 +45,5 @@
 20. Implement boosted retrieval/ping LLM again with boosted retreival if response is bad.
 21. is .env.template a necessary file?
 22. Logger is cool I should understand it, but it's too much rn
-23. 
+23. We could have students label their answer in 1 of a few different ways, then
+        use that as training data for the audit model.
