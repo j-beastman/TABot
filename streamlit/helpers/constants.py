@@ -1,4 +1,5 @@
 from pathlib import Path
+from langchain import PromptTemplate
 
 PAGE_ICON = "👾"
 APP_NAME = "TA Bot"
@@ -80,3 +81,62 @@ CHAT_HISTORY = [
         + "working as a Teaching Assistant for a computer science course.",
     )
 ]
+
+BOOSTED_SEARCH_TEMPLATE = PromptTemplate(
+    input_variables=[
+        "user_query",
+        "additional_search_prompts",
+        "initial_search_results",
+    ],
+    template=(
+        """
+            USER QUERY: "{user_query}"
+
+            SEARCH RESULTS: These are the results of searching for the user's query
+            {initial_search_results}
+
+            SYSTEM:
+            Using the above SEARCH RESULTS and the most recent element of USER QUERY,
+            write a numbered list of five new search queries to look up additional information
+            relevant to answering the user's query in a vector database.
+            
+            For best results, queries should mimic the expected text content of the records
+            to be retrieved, rather than being phrased like a traditional search engine query.
+            Create two general searches relevant to the whole query,
+            and three searches relevant to the three most important topics found in the
+            SEARCH RESULTS.
+
+            {additional_search_prompts}
+
+            EXAMPLE ANSWER:
+            1. <general search query 1>
+            2. <general search query 2>
+            3. <search query for one topic in the SEARCH RESULTS>
+            4. <search query for another topic in the SEARCH RESULTS>
+            5. <search query for a final topic in the SEARCH RESULTS>
+            """
+    ),
+)
+# Prompt to query each of the 5
+BOOSTED_FINAL_OUTPUT_TEMPLATE = PromptTemplate(
+    input_variables=[
+        "context",
+        "user_query",
+        "additional_output_prompts",
+    ],
+    template=(
+        """
+            CONTEXT:
+            {context}
+
+            SYSTEM:
+            - Do not guess or make up any information that is not
+              provided in the above CONTEXT.
+            - Ignore CONTEXT that is irrelevant to the provided PROMPT.
+
+            {additional_output_prompts}
+
+            PROMPT: {user_query}
+            """
+    ),
+)
