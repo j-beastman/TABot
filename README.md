@@ -4,35 +4,66 @@ This is an app that let's you ask questions about any data source by leveraging 
 
 ## How does it work?
 
-1. Upload any `file(s)` or enter any `path` or `url`
-2. The data source is detected and loaded into text documents
-3. The text documents are embedded using openai embeddings
-4. The embeddings are stored as a vector dataset to activeloop's database hub
-5. A langchain is created consisting of a LLM model (`gpt-3.5-turbo` by default) and the vector store as retriever
-6. When asking questions to the app, the chain embeds the input prompt and does a similarity search of in the vector store and uses the best results as context for the LLM to generate an appropriate response
-7. Finally the chat history is cached locally to enable a [ChatGPT](https://chat.openai.com/) like Q&A conversation
+1. A langchain is created consisting of a LLM model (`gpt-3.5-turbo` by default) and the vector store as retriever
+2. When asking questions to the app, the chain embeds the input prompt and does a similarity search of in the vector store and uses the best results as context for the LLM to generate an appropriate response
+3. Finally the chat history is cached locally to enable a [ChatGPT](https://chat.openai.com/) like Q&A conversation
 
-## Good to know
-- The app only runs on `py>=3.10`!
-- As default context this git repository is taken so you can directly start asking question about its functionality without chosing an own data source.
-- To run locally or deploy somewhere, execute `cp .env.template .env` and set credentials in the newly created `.env` file. Other options are manually setting of system environment variables, or storing them into `.streamlit/secrets.toml` when hosted via streamlit.
-- If you have credentials set like explained above, you can just hit `submit` in the authentication without reentering your credentials in the app.
-- To enable `Local Mode` (disabled for the demo) set `ENABLE_LOCAL_MODE` to `True` in `datachad/constants.py`. You need to have the model binaries downloaded and stored inside `./models/`
-- Currently supported `Local Mode` OSS model is [GPT4all](https://gpt4all.io/models/ggml-gpt4all-j-v1.3-groovy.bin). To add more models update `datachad/models.py`
-- If you are running `Local Mode` all your data stays locally on your machine. No API calls are made. Same with the embeddings database which stores its data to `./data/`
-- Your data won't load? Feel free to open an Issue or PR and contribute!
-- Yes, Chad in `DataChad` refers to the well-known [meme](https://www.google.com/search?q=chad+meme)
+<img src="./tabot.png" width="100%"/>
 
-
+## Roadmap:
+1. Retrieve links
+2.
 ## TODO LIST
 If you like to contribute, feel free to grab any task
-- [x] Refactor utils, especially the loaders
-- [x] Add option to choose model and embeddings
-- [x] Enable fully local / private mode
-- [x] Add option to upload multiple files to a single dataset
-- [x] Decouple datachad modules from streamlit
-- [ ] Support streaming responses
-- [ ] Add Image caption and Audio transcription support
+
+1. Would like to change iter_all_posts function so it downloads questions that haven't been stored yet
+    - Perhaps we could use a snowflake or mongoDB database to store docs that are also in the vector
+        database. This way, we could see what's in the vector database and what 
+2. Add a linter
+3. Add a different template for posts that are notes
+4. Add weights to documents
+5. Some answers are formatted in html or md, make them into plain text when downloading
+6. Need to make embedded links accessible
+7. Add more documents:
+    - B&O textbook
+    - Slide decks
+    - Specs
+    - Random stuff from the calendar
+8. Would be cool if you could select which homework you're working on, kind of like selecting a folder
+    for a Piazza post...
+9. Ensure that there are no contradictory answers:
+    - Make a training dataset of questions
+    - Ensure the answers are correct
+    - Negate all of the questions
+    - See what responses LLM produces
+10. Answers need to have links to documentation
+    - I can incorporate this relatively easily
+11. Obviously this was forked from someone else's repo, so would like to remove all the unnecessary 
+    stuff that's in here
+12. Update the .gitignore file
+    - I'm not sure what I meant exactly, but we shouldn't be uploading unnecessary/secret stuff once
+        it's public
+13. Add different data sources for CS40, CS11, etc. 
+    - Change the "Data source text_embeddings is ready to go with model gpt-3.5-turbo!" thing that pops up?
+        to also say that you're authenticated or something
+14. Add a dark mode...
+15. Need basic information about the course too! 
+    - Professor, language taught in, etc.
+        - There could just be 1 document for that. Could grab from SIS?
+        - Could grab through using requests library with course website?
+16. Find the textbooks on the internet and load them into the database too. It'd be really helpful if when
+    a student asked a specific question they got feedback on the question.
+17. This warning pops up sometimes, would like to fix:
+        "/Users/john.eastman/Desktop/Personal/TABot/piazza_data.py:28: MarkupResemblesLocatorWarning: The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.
+        soup = BeautifulSoup(html_text, 'lxml')"
+18. A "neither appeared" popped up, need to figure out what post that is. I think it's a poll
+19. Need to figure out optimal time to sleep for Piazza API, also is there a way to go rly fast but then
+    when error pops up, we stop and wait then continue?
+20. Implement boosted retrieval/ping LLM again with boosted retreival if response is bad.
+21. We could have students label their answer in 1 of a few different ways, then
+        use that as training data for the audit model.
+22. https://python.langchain.com/docs/modules/data_connection/retrievers/parent_document_retriever
+23. Figure out why the prompt template is getting printed so often.
 
 ## To Run Locally or to develop:
 1. Run `poetry install`

@@ -13,7 +13,6 @@ CLASSES = {
 
 p = Piazza()
 
-
 p.user_login(email=EMAIL, password=PASSWORD)
 
 for cs_class in CLASSES:

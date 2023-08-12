@@ -255,9 +255,7 @@ def update_chain() -> None:
                     "activeloop_org_name": st.session_state["activeloop_org_name"],
                 },
             )
-            if st.session_state["uploaded_files"] == st.session_state["data_source"]:
-                # remove uploaded files from disk
-                delete_files(st.session_state["uploaded_files"])
+
             st.session_state["chat_history"] = []
             msg = f"""Data source **{st.session_state['data_source']}**
                     is ready to go with model **{st.session_state['model']}**!"""
