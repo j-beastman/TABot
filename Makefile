@@ -25,6 +25,9 @@ run_site:
 get_piazza_data:
 	python deeplake/load_piazza.py
 
+get_cs40_data:
+	python deeplake/helpers/cs40_scraper.py
+
 
 load_docs:
 	python deeplake/load_docs.py
