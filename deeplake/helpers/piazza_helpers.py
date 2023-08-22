@@ -1,10 +1,9 @@
 import html
 import os
-
 import requests
+
 from bs4 import BeautifulSoup
 from joblib import Memory
-
 from tqdm import tqdm
 
 PIAZZA_BASE_LINK = "https://piazza.com/class/"

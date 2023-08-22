@@ -5,26 +5,26 @@ install:
 	poetry install
 
 format:
-	poetry run autopep8 --in-place --aggressive --recursive $(FORMAT_DIRS)
-	poetry run isort --profile black $(FORMAT_DIRS)
-	poetry run black $(FORMAT_DIRS)
+	autopep8 --in-place --aggressive --recursive $(FORMAT_DIRS)
+	isort --profile black $(FORMAT_DIRS)
+	black $(FORMAT_DIRS)
 	make lint
 # Lint target
 lint:
-	poetry run isort --check --profile black $(FORMAT_DIRS)
-	poetry run black --check $(FORMAT_DIRS)
-	poetry run flake8 $(FORMAT_DIRS)
+	isort --check --profile black $(FORMAT_DIRS)
+	black --check $(FORMAT_DIRS)
+	flake8 $(FORMAT_DIRS)
 
 # clean:
 # 	@$(RM) -rf data/*
 
 run_site:
-	cd streamlit && poetry run streamlit run app.py
+	cd streamlit && streamlit run app.py
 
 
 get_piazza_data:
-	poetry run python deeplake/load_piazza.py
+	python deeplake/load_piazza.py
 
 
 load_docs:
-	poetry run python deeplake/load_docs.py
+	python deeplake/load_docs.py

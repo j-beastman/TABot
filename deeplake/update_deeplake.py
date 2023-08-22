@@ -1,7 +1,5 @@
-# from deeplake.core.vectorstore.deeplake_vectorstore import VectorStore
-# import openai
-# import os
 import streamlit as st
+
 from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter

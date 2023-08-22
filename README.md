@@ -1,6 +1,6 @@
 # TABot 🤖
 
-This is an app that let's you ask questions about any data source by leveraging [embeddings](https://platform.openai.com/docs/guides/embeddings), [vector databases](https://www.activeloop.ai/), [large language models](https://platform.openai.com/docs/models/gpt-3-5) and last but not least [langchains](https://github.com/hwchase17/langchain)
+This is an app that let's you ask questions about any data source by leveraging [embeddings](https://platform.openai.com/docs/guides/embeddings), [vector databases](https://www.activeloop.ai/), [large language models](https://platform.openai.com/docs/models/gpt-3-5) and last but not least [langchain](https://github.com/hwchase17/langchain)
 
 ## How does it work?
 
@@ -10,7 +10,7 @@ This is an app that let's you ask questions about any data source by leveraging 
 
 <img src="./tabot.png" width="100%"/>
 
-## Roadmap:
+## Road Map:
 1. Retrieve links
 2.
 ## TODO LIST

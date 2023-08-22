@@ -1,8 +1,7 @@
 import os
-
+import re
 import openai
 import streamlit as st
-from dotenv import load_dotenv
 from langchain.callbacks import OpenAICallbackHandler, get_openai_callback
 
 import deeplake
@@ -25,12 +24,10 @@ from .constants import (
     K,
     CHAT_HISTORY,
 )
-from .io import delete_files
 # from logging import logger
 from .models import MODELS, MODES
 
 # loads environment variables
-load_dotenv()
 
 
 def initialize_session_state():
