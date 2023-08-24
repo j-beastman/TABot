@@ -30,4 +30,4 @@ get_cs40_data:
 
 
 load_docs:
-	python deeplake/load_docs.py
+	python deeplake/update_deeplake.py
