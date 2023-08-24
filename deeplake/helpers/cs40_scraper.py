@@ -3,7 +3,6 @@ import typing as T
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from langchain.schema.document import Document
 
 pdf_directory = "deeplake/data/pdf"
 txt_directory = "deeplake/data/txt"

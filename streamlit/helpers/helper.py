@@ -287,10 +287,11 @@ def generate_response(prompt: str) -> str:
             {"question": prompt, "chat_history": st.session_state["chat_history"]}
         )
         update_usage(cb)
-    # logger.info(f"Response: '{response}'")
     st.session_state["chat_history"].append((prompt, response["answer"]))
-    print(response["answer"])
     return response["answer"]
+
+
+
 
 # TODO: Calculate costs; create this function
 #   using the templates in the constants module.
@@ -305,7 +306,7 @@ def generate_boosted_response(prompt:str) -> str:
         update_usage(cb)
     # logger.info(f"Response: '{response}'")
     st.session_state["chat_history"].append((prompt, response["answer"]))
-    print(response["answer"])
+    # print(response["answer"])
     return response["answer"]
 
 
@@ -322,7 +323,7 @@ def retrieve_links(prompt, db, max_links=None): # <-- retrieving links is going 
     links = []
     for doc in docs:
         link = doc[0].metadata["source"]
-        print(link)
+        # print(link)
         if link.startswith(dr_docs_dir):
             link = link[len(dr_docs_dir) :]
             link = "https://docs.datarobot.com/en/docs/" + link

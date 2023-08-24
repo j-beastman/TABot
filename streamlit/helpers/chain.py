@@ -27,7 +27,8 @@ def get_chain(
         model,
         retriever=retriever,
         chain_type="stuff",
-        verbose=True,
+        verbose=False,
+        # verbose=True,
         # we limit the maximum number of used tokens
         # to prevent running into the models context window limit of 4096
         max_tokens_limit=options["max_tokens"],

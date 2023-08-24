@@ -1,5 +1,4 @@
 import os
-import streamlit as st
 
 from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
@@ -13,7 +12,7 @@ VECTOR_STORE_PATH = f"hub://69-69/{CLASS}"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 SOURCE_DOCUMENTS_DIR = f"data/{CLASS}/Piazza_docs"
 SOURCE_DOCUMENTS_FILTER = "**/*.txt"
-ACTIVELOOP_TOKEN = "eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5MjkxMzI3MCwiZXhwIjoxNjk4ODc0ODU5fQ.eyJpZCI6ImpiZWFzdG1hbiJ9.lL5vN_cuJM5J0BIYwEt0-K3dbBPcm6IE2PoZzlZp8JhSfd2EHmOkcRVWW-kgdgCe9t1gj2m6dw3fWZEZavfFTw"
+ACTIVELOOP_TOKEN = "eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5MjkxMzI3MCwiZXhwIjoxNjk4ODc0ODU5fQ.eyJpZCI6ImpiZWFzdG1hbiJ9.lL5vN_cuJM5J0BIYwEt0-K3dbBPcm6IE2PoZzlZp8JhSfd2EHmOkcRVWW-kgdgCe9t1gj2m6dw3fWZEZavfFTw"  # noqa: E501
 
 SPLITTER = RecursiveCharacterTextSplitter(
             chunk_size=2000,

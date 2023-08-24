@@ -60,7 +60,7 @@ if submit_button and user_input:
     output = generate_response(user_input)
     st.session_state["past"].append(user_input)
     st.session_state["generated"].append(output)
-    print(st.session_state["chat_history"])
+    # print(st.session_state["chat_history"])
 
 if st.session_state["generated"]:
     with response_container:
