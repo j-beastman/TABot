@@ -1,3 +1,19 @@
+# CLASSES = {
+#         "cs40": {
+#             "id": "lck5atzpw5k69m",
+#         }
+#     }
+CLASS = "cs40"
+CS40_ID = "lck5atzpw5k69m"
+
+VECTOR_STORE_PATH = f"hub://69-69/{CLASS}"
+
+ACTIVELOOP_ORG_NAME = "69-69"
+EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+
+SOURCE_DOCUMENTS_DIR = f"data/{CLASS}/Piazza_docs"
+TEXT_FILTER = "**/*.txt"
+
 DATA_DICTIONARY = """
     "history[0] (list) but it has like multiple versions (idk),
         content: Holds the question, sometimes has links to documentation** 

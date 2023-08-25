@@ -1,34 +1,32 @@
 import typing as T
 import os
 
+import deeplake
+from deeplake.core.dataset import Dataset
 from langchain.document_loaders import DirectoryLoader
+from langchain.document_loaders import PyPDFLoader
+from langchain.docstore.document import Document
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import DeepLake
-from langchain.document_loaders import PyPDFLoader
-from langchain.docstore.document import Document
 
-from helpers.scrapers import get_cs40_docs
-
-# CLASSES = {
-#         "cs40": {
-#             "id": "lck5atzpw5k69m",
-#         }
-#     }
-
-CLASS = "cs40"
-VECTOR_STORE_PATH = f"hub://69-69/{CLASS}"
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-SOURCE_DOCUMENTS_DIR = f"data/{CLASS}/Piazza_docs"
-SOURCE_DOCUMENTS_FILTER = "**/*.txt"
-ACTIVELOOP_TOKEN = "eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5MjkxMzI3MCwiZXhwIjoxNjk4ODc0ODU5fQ.eyJpZCI6ImpiZWFzdG1hbiJ9.lL5vN_cuJM5J0BIYwEt0-K3dbBPcm6IE2PoZzlZp8JhSfd2EHmOkcRVWW-kgdgCe9t1gj2m6dw3fWZEZavfFTw"  # noqa: E501
+from helpers.class_scrape import get_cs40_docs
+from helpers.piazza_scrape import scrape_piazza
+from helpers.deeplake_utils import (
+    pull_deeplake_dataset,
+    pull_docs_from_db,
+    get_embeddings
+)
+from helpers.constants import (
+    VECTOR_STORE_PATH,
+    ACTIVELOOP_TOKEN,
+    TEXT_FILTER
+)
 
 SPLITTER = RecursiveCharacterTextSplitter(
             chunk_size=2000,
             chunk_overlap=1000,
         )
-print("dont do this until we have a way to compare local and what's on deeplake")
-# exit()
 
 def load_docs(directory, filter, split=False):
     loader = DirectoryLoader(f"./{directory}", glob=filter)
@@ -54,37 +52,19 @@ def load_pdfs(directory):
         data += pages
     return data
 
-# Download content from cs40 website, 
-source_dictionary = get_cs40_docs()
-
-# Need to implement adding Piazza Docs too...
-docs = (load_pdfs("deeplake/data/pdf") + 
-        load_docs("deeplake/data/txt", filter=SOURCE_DOCUMENTS_FILTER, split=True))
-
-for doc in docs:
-    source_dictionary[doc.metadata]
-
-# # Will download the model the first time it runs (slowly)
-# # Apparently using embedding function is deprecated?
-# embedding_function = SentenceTransformerEmbeddings(
-#     model_name=EMBEDDING_MODEL_NAME,
-#     cache_folder="cache/",
-# )
-
-# # This will automatically create a new Deep Lake dataset if the
-# # dataset_path does not exist
-# DeepLake.from_documents(
-#     docs,
-#     embedding_function,
-#     dataset_path=VECTOR_STORE_PATH,
-#     token=ACTIVELOOP_TOKEN,
-# )
-
 def update_vector_database():
+    # Download content from cs40 website, 
+    source_dictionary = get_cs40_docs()
+
     print("Load and split local documents & vectordb documents")
     # if local_docs doesn't become a list of documents, shouldn't this throw an error?
     local_documents:T.List[Document] = (load_pdfs("deeplake/data/pdf") + 
-                            load_docs("deeplake/data/txt", filter=SOURCE_DOCUMENTS_FILTER, split=True))
+                        load_docs("deeplake/data/txt", filter=TEXT_FILTER, split=True),
+                        load_docs("piazzadocs", TEXT_FILTER))
+    
+    for doc in local_documents:
+        source_dictionary[doc.metadata]
+
     vector_docs:T.List[T.Dict[str, int]] = pull_docs_from_db()
     
     print("Split the metadata from page content in order to create sets.")
@@ -105,7 +85,8 @@ def update_vector_database():
 
     print("Create connection to dataset and delete documents that aren't wanted :(")
     ds = pull_deeplake_dataset()
-    for index in indices_to_be_deleted: # TODO: Write to a file which ones are being deleted?
+    # TODO: Write to a file which ones are being deleted?
+    for index in indices_to_be_deleted: 
         print("deleting doc")
         ds.text.pop(index)
         ds.embedding.pop(index)
@@ -125,7 +106,7 @@ def update_vector_database():
     if (len(restored_list) != 0):
         DeepLake.from_documents(
             restored_list,
-            embedding=EMBEDDING,
+            embedding=get_embeddings(),
             dataset_path=VECTOR_STORE_PATH,
             token=ACTIVELOOP_TOKEN,
         )

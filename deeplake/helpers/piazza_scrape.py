@@ -5,6 +5,14 @@ from bs4 import BeautifulSoup
 from piazza_api import Piazza
 from tqdm import tqdm
 
+from constants import (
+    CLASS,
+    CS40_ID
+)
+from credentials import (
+    PIAZZA_EMAIL,
+    PIAZZA_PASSWORD
+)
 
 PIAZZA_BASE_LINK = "https://piazza.com/class/"
 
@@ -17,7 +25,7 @@ def get_text(html_text):
 
 # There are a few places where the answer can be unfortunately, so we have
 #   have to check all of them. Good thing it's never in 2 places
-def get_answer_contents(answer):
+def get_answer_contents(answer) -> str:
     try:
         return get_text(answer['content'])
     except KeyError:
@@ -33,7 +41,7 @@ def get_answer_contents(answer):
                     print("Unexpected Behavior, answer lies somewhere else")
                     print("here is the answer", answer)
 
-def get_length(answer, key):
+def get_length(answer, key) -> int:
     try:
         return len(answer[key])
     except BaseException:
@@ -54,7 +62,7 @@ def get_post_answers(answers) -> str:
             # now...
     return answer_string
 
-def output_to_file(posts, class_name, class_id):
+def output_to_file(posts, class_name, class_id) -> None:
     for post in tqdm(posts):
         instructor, student = False, False
         sub_directory = ""
@@ -86,7 +94,7 @@ def output_to_file(posts, class_name, class_id):
         except TypeError:
             print("Key configuration changed")
         
-        file_path = f"data/{class_name}/Piazza_docs/{sub_directory}/{post['nr']}.txt"
+        file_path = f"deeplake/data/{class_name}/Piazza_docs/{sub_directory}/{post['nr']}.txt"
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "w") as file:
             file.write(
@@ -105,10 +113,12 @@ def output_to_file(posts, class_name, class_id):
                 """
             )
 
-
-def scrape_piazza(class_name: str, class_id:int, email:str, password:str):
+def scrape_piazza(class_name: str, class_id:int, email:str, password:str) -> None:
     p = Piazza()
-    p.user_login(email=email, password=password)
+    p.user_login(email="john@bee-haven.com", password="Dana#113")
+
     class_connection = p.network(class_id)
     posts = class_connection.iter_all_posts(limit=None, sleep=1)
     output_to_file(posts, class_name=class_name, class_id=class_id)
+
+scrape_piazza(CLASS, CS40_ID, PIAZZA_EMAIL, PIAZZA_PASSWORD)

@@ -23,7 +23,7 @@ run_site:
 
 
 get_piazza_data:
-	python deeplake/load_piazza.py
+	python deeplake/helpers/piazza_scrape.py
 
 get_cs40_data:
 	python deeplake/helpers/cs40_scraper.py
