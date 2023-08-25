@@ -1,90 +1,73 @@
+# from deeplake.core.vectorstore.deeplake_vectorstore import VectorStore
+# import openai
 import typing as T
-import os
-
+import re
 from langchain.document_loaders import DirectoryLoader
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import DeepLake
-from langchain.document_loaders import PyPDFLoader
-from langchain.docstore.document import Document
+from langchain.document_loaders import DataFrameLoader
+from github import Github, Auth
+from pull_from_snowflake import pull_data_from_snowflake
+from github.GithubException import RateLimitExceededException
+import time
 
-from helpers.scrapers import get_cs40_docs
+from constants import (
+    ACTIVELOOP_TOKEN,
+    GIT_TOKEN,
+    VECTOR_STORE_PATH, 
+    DR_TRUST_DIR, 
+    DR_TRUST_FILTER,
+)
 
-# CLASSES = {
-#         "cs40": {
-#             "id": "lck5atzpw5k69m",
-#         }
-#     }
+REPOS = [
+    "datarobot-docs",
+    "public_api_client",
+    # "datarobot-predict" <-- this throws errors (from api_ref.md)
+]
 
-CLASS = "cs40"
-VECTOR_STORE_PATH = f"hub://69-69/{CLASS}"
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-SOURCE_DOCUMENTS_DIR = f"data/{CLASS}/Piazza_docs"
-SOURCE_DOCUMENTS_FILTER = "**/*.txt"
-ACTIVELOOP_TOKEN = "eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5MjkxMzI3MCwiZXhwIjoxNjk4ODc0ODU5fQ.eyJpZCI6ImpiZWFzdG1hbiJ9.lL5vN_cuJM5J0BIYwEt0-K3dbBPcm6IE2PoZzlZp8JhSfd2EHmOkcRVWW-kgdgCe9t1gj2m6dw3fWZEZavfFTw"  # noqa: E501
+from deeplake_utils import (
+    get_embeddings,
+    pull_deeplake_dataset,
+    pull_docs_from_db,
+)
 
-SPLITTER = RecursiveCharacterTextSplitter(
-            chunk_size=2000,
-            chunk_overlap=1000,
-        )
-print("dont do this until we have a way to compare local and what's on deeplake")
-# exit()
+EMBEDDING = get_embeddings()
 
-def load_docs(directory, filter, split=False):
+# Store RFPs and Misc
+def load_all_rfps() -> T.List[Document]:
+    df = pull_data_from_snowflake()
+    df['Content'] = df['QUESTION'] + ' ' + df['RESPONSE']
+    df.drop(['QUESTION', 'RESPONSE'], axis=1, inplace=True)
+    loader = DataFrameLoader(df, page_content_column="Content")
+    rfp_docs = loader.load()
+    return rfp_docs
+
+# All RFPs are stored in the Snowflake DB
+def load_misc(directory, filter, split=False) -> T.List[Document]:
     loader = DirectoryLoader(f"./{directory}", glob=filter)
-    # TODO: I don't think that there is a need to split the Piazza documents
-    #   because they're all split up already!
-    #   however, this will be necessary for loading in the textbook and such
     print(f"Loading {directory} directory for any {filter}")
     data = loader.load()
     if split:
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=500,
+        )
         print(f"Splitting {len(data)} documents")
-        r_docs = SPLITTER.split_documents(data)
+        r_docs = splitter.split_documents(data)
+        print(type(r_docs), "MISC DOCS TYPE")
         return r_docs
 
     print(f"Created {len(data)} documents from {directory}")
+    
     return data
-
-def load_pdfs(directory):
-    file_names = os.listdir(directory)
-    data = []
-    for file in file_names:
-        loader = PyPDFLoader(f"{directory}/{file}")
-        pages = loader.load_and_split(text_splitter=SPLITTER)
-        data += pages
-    return data
-
-# Download content from cs40 website, 
-source_dictionary = get_cs40_docs()
-
-# Need to implement adding Piazza Docs too...
-docs = (load_pdfs("deeplake/data/pdf") + 
-        load_docs("deeplake/data/txt", filter=SOURCE_DOCUMENTS_FILTER, split=True))
-
-for doc in docs:
-    source_dictionary[doc.metadata]
-
-# # Will download the model the first time it runs (slowly)
-# # Apparently using embedding function is deprecated?
-# embedding_function = SentenceTransformerEmbeddings(
-#     model_name=EMBEDDING_MODEL_NAME,
-#     cache_folder="cache/",
-# )
-
-# # This will automatically create a new Deep Lake dataset if the
-# # dataset_path does not exist
-# DeepLake.from_documents(
-#     docs,
-#     embedding_function,
-#     dataset_path=VECTOR_STORE_PATH,
-#     token=ACTIVELOOP_TOKEN,
-# )
 
 def update_vector_database():
     print("Load and split local documents & vectordb documents")
     # if local_docs doesn't become a list of documents, shouldn't this throw an error?
-    local_documents:T.List[Document] = (load_pdfs("deeplake/data/pdf") + 
-                            load_docs("deeplake/data/txt", filter=SOURCE_DOCUMENTS_FILTER, split=True))
+    local_documents:T.List[Document] = (load_all_rfps() + 
+                                        load_misc(DR_TRUST_DIR, DR_TRUST_FILTER, split=True) + 
+                                        load_github_repos())
     vector_docs:T.List[T.Dict[str, int]] = pull_docs_from_db()
     
     print("Split the metadata from page content in order to create sets.")
@@ -130,3 +113,6 @@ def update_vector_database():
             token=ACTIVELOOP_TOKEN,
         )
     
+    
+if __name__ == "__main__":
+    update_vector_database()

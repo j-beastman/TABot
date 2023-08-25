@@ -75,4 +75,3 @@ def get_cs40_docs() -> T.Dict:
                     txt_file.write("\n")
     return source_dictionary
 
-print(get_cs40_docs())

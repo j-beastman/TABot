@@ -1,23 +1,12 @@
 import html
 import os
-import requests
 
 from bs4 import BeautifulSoup
-from joblib import Memory
+from piazza_api import Piazza
 from tqdm import tqdm
 
+
 PIAZZA_BASE_LINK = "https://piazza.com/class/"
-
-memory = Memory("cache/", verbose=0)
-
-
-def download_file(url, directory, filename):
-    with requests.get(url, stream=True) as response:
-        file_path = os.path.join(directory, filename)
-        with open(file_path, "wb") as file:
-            for chunk in response.iter_content(chunk_size=8192):
-                file.write(chunk)
-    return file_path
 
 # If string has markdown or html stuff in it, it strips
 #   and returns the raw text
@@ -31,16 +20,16 @@ def get_text(html_text):
 def get_answer_contents(answer):
     try:
         return get_text(answer['content'])
-    except:
+    except KeyError:
         try:
             return get_text(answer['subject'])
-        except:
+        except KeyError:
             try:
                 return get_text(answer["history"][0]["content"])
-            except:
+            except KeyError:
                 try:
                     return get_text(answer["history"][0]["subject"])
-                except:
+                except KeyError:
                     print("Unexpected Behavior, answer lies somewhere else")
                     print("here is the answer", answer)
 
@@ -77,12 +66,12 @@ def output_to_file(posts, class_name, class_id):
                 student = True
                 sub_directory = "student_posts"
         if not (student or instructor):
-            # This case was a poll... vewy interesting
+            # This case was a poll... very interesting
             print(f"{PIAZZA_BASE_LINK}{class_id}/post/{post['nr']}")
             print("neither appeared")
             continue
         post_answers = get_post_answers(post["children"])
-        # If post did not recieve an answer remove it. If post was a note, we
+        # If post did not receive an answer remove it. If post was a note, we
         # should keep it.
         if post_answers == "":
             continue
@@ -93,10 +82,9 @@ def output_to_file(posts, class_name, class_id):
         link_to_post = f"{PIAZZA_BASE_LINK}{class_id}/post/{post['nr']}"
         
         try:
-            # this key config may change?!
             post_content = get_text(post["history"][0]["content"])
         except TypeError:
-            print("yeap it changed")
+            print("Key configuration changed")
         
         file_path = f"data/{class_name}/Piazza_docs/{sub_directory}/{post['nr']}.txt"
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -118,26 +106,9 @@ def output_to_file(posts, class_name, class_id):
             )
 
 
-
-DATA_DICTIONARY = """
-    "history[0] (list) but it has like multiple versions (idk),
-        content: Holds the question, sometimes has links to documentation** (need to extract)
-        subject: Subject of question
-
-    "type": either "note", many others I'm sure
-
-    "tags (list)":
-        Not sure what values these could have
-
-    "tag_good (list of dictionaries)":
-        list of people that endorsed the question/post/note
-            dictionary:
-                role: 'ta', 'professor', 'student'
-
-    "children (list of dictionaries)": (possibly answers/followups)
-        "subject": this is actually the content of the response
-        "created": date created
-        "tag_good": endorsements
-            role: as above
-        "children (list of dictionaries)": a followup to the followup
-"""
+def scrape_piazza(class_name: str, class_id:int, email:str, password:str):
+    p = Piazza()
+    p.user_login(email=email, password=password)
+    class_connection = p.network(class_id)
+    posts = class_connection.iter_all_posts(limit=None, sleep=1)
+    output_to_file(posts, class_name=class_name, class_id=class_id)
